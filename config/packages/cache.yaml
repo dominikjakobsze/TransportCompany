@@ -8,6 +8,7 @@ framework:
         # Other options include:
 
         # Redis
+        # composer require predis/predis
         app: cache.adapter.redis
         default_redis_provider: redis://127.0.0.1:5500
 
