@@ -3,14 +3,18 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'home')]
-    public function index()
+    /**
+     * @return Response
+     */
+    #[Route("/{reactRouting}", name: 'home', requirements: ['reactRouting' => '^(?!v1/api).*$'], defaults: ['reactRouting' => null])]
+    public function index(): Response
     {
         return $this->render('base.html.twig');
     }
