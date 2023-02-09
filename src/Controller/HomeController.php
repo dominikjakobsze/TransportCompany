@@ -13,7 +13,7 @@ class HomeController extends AbstractController
     /**
      * @return Response
      */
-    #[Route("/{reactRouting}", name: 'home', requirements: ['reactRouting' => '^(?!v1/api).*$'], defaults: ['reactRouting' => null])]
+    #[Route("/{reactRouting}", name: 'home', requirements: ['reactRouting' => '^(?!api).*$'], defaults: ['reactRouting' => null])]
     public function index(): Response
     {
         return $this->render('base.html.twig');
