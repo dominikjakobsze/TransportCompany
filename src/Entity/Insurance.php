@@ -14,6 +14,7 @@ use App\Repository\InsuranceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Expression;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 #[ORM\Entity(repositoryClass: InsuranceRepository::class)]
@@ -43,8 +44,8 @@ class Insurance
     #[ORM\Column]
     private ?int $id = null;
 
-    #[GreaterThanOrEqual(new \DateTime('now', new \DateTimeZone('Europe/Warsaw')), message: 'The date cannot be in past')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Expression('value === null')]
     private ?\DateTimeInterface $oc = null;
 
     #[GreaterThanOrEqual(new \DateTime('now', new \DateTimeZone('Europe/Warsaw')), message: 'The date cannot be in past')]

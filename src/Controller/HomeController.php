@@ -18,4 +18,10 @@ class HomeController extends AbstractController
     {
         return $this->render('base.html.twig');
     }
+
+    #[Route('/api/test', name: 'test')]
+    public function test()
+    {
+        dd((new \DateTime('now', new \DateTimeZone('Europe/Warsaw')))->format('Y-m-d H:i:s'));
+    }
 }
