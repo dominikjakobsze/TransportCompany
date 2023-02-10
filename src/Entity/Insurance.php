@@ -45,19 +45,19 @@ class Insurance
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Expression('value === null')]
+    #[Expression('value === null or value >= this.getDateNow()')]
     private ?\DateTimeInterface $oc = null;
 
-    #[GreaterThanOrEqual(new \DateTime('now', new \DateTimeZone('Europe/Warsaw')), message: 'The date cannot be in past')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Expression('value === null or value >= this.getDateNow()')]
     private ?\DateTimeInterface $ac = null;
 
-    #[GreaterThanOrEqual(new \DateTime('now', new \DateTimeZone('Europe/Warsaw')), message: 'The date cannot be in past')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Expression('value === null or value >= this.getDateNow()')]
     private ?\DateTimeInterface $nw = null;
 
-    #[GreaterThanOrEqual(new \DateTime('now', new \DateTimeZone('Europe/Warsaw')), message: 'The date cannot be in past')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Expression('value === null or value >= this.getDateNow()')]
     private ?\DateTimeInterface $tacho = null;
 
     #[Groups(['insurance:read'])]
@@ -120,5 +120,10 @@ class Insurance
         $this->tacho = $tacho;
 
         return $this;
+    }
+
+    public function getDateNow(): \DateTimeInterface
+    {
+        return new \DateTime('now', new \DateTimeZone('Europe/Warsaw'));
     }
 }
