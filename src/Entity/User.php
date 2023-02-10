@@ -6,6 +6,10 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Unique;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource]
@@ -17,16 +21,27 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank]
+    #[NotNull]
+    #[Email]
+    #[Unique]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank]
+    #[NotNull]
+    #[Unique]
     private ?string $username = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank]
+    #[NotNull]
     private ?string $password = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $role = [];
+    #[ORM\Column(type: Types::JSON)]
+    #[NotBlank]
+    #[NotNull]
+    private array $role = ['ROLE_USER'];
 
     public function getId(): ?int
     {
