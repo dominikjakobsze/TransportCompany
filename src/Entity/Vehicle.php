@@ -5,9 +5,14 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\VehicleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Unique;
 
 #[ORM\Entity(repositoryClass: VehicleRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    shortName: 'vehicle'
+)]
 class Vehicle
 {
     #[ORM\Id]
@@ -16,26 +21,14 @@ class Vehicle
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column(length: 255)]
+    #[NotBlank]
+    #[NotNull]
+    #[Unique]
     private ?string $register_number = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     public function getRegisterNumber(): ?string
