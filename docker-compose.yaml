@@ -1,29 +1,29 @@
 services:
-#  mercure_log:
-#    container_name: mercure_log
-#    hostname: mercure_log
-#    image: dunglas/mercure
-#    restart: unless-stopped
-#    environment:
-#      MERCURE_PUBLISHER_JWT_KEY: 'tajne'
-#      MERCURE_SUBSCRIBER_JWT_KEY: 'tajne'
-#      SERVER_NAME: ':80'
-#    command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
-#    ports:
-#      - 8888:80
-#    volumes:
-#      - mercure_data:/data
-#      - mercure_config:/config
+  #  mercure_log:
+  #    container_name: mercure_log
+  #    hostname: mercure_log
+  #    image: dunglas/mercure
+  #    restart: unless-stopped
+  #    environment:
+  #      MERCURE_PUBLISHER_JWT_KEY: 'tajne'
+  #      MERCURE_SUBSCRIBER_JWT_KEY: 'tajne'
+  #      SERVER_NAME: ':80'
+  #    command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
+  #    ports:
+  #      - 8888:80
+  #    volumes:
+  #      - mercure_data:/data
+  #      - mercure_config:/config
   db_log:
     container_name: db_log
     hostname: db_log
     image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: test
-      MYSQL_DATABASE: test
-      MYSQL_USER: test
-      MYSQL_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: dev
+      MYSQL_DATABASE: dev
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
     ports:
       - 2400:3306
     volumes:
