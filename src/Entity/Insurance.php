@@ -60,6 +60,9 @@ class Insurance
     #[Expression('value === null or value >= this.getDateNow()')]
     private ?\DateTimeInterface $tacho = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $tech = null;
+
     #[Groups(['insurance:read'])]
     public function getId(): ?int
     {
@@ -125,5 +128,17 @@ class Insurance
     public function getDateNow(): \DateTimeInterface
     {
         return new \DateTime('now', new \DateTimeZone('Europe/Warsaw'));
+    }
+
+    public function getTech(): ?\DateTimeInterface
+    {
+        return $this->tech;
+    }
+
+    public function setTech(?\DateTimeInterface $tech): self
+    {
+        $this->tech = $tech;
+
+        return $this;
     }
 }
