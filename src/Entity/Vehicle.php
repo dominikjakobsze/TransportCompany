@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Repository\VehicleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -37,6 +38,7 @@ use Symfony\Component\Validator\Constraints\Unique;
 )]
 #[ApiFilter(PropertyFilter::class)]
 #[ApiFilter(SearchFilter::class, properties: ['register_number' => 'partial'])]
+#[UniqueEntity(fields: ['register_number'])]
 class Vehicle
 {
     #[ORM\Id]
@@ -45,9 +47,8 @@ class Vehicle
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[NotBlank]
     #[NotNull]
-    #[Unique]
+    #[NotBlank]
     private ?string $register_number = null;
 
     public function getId(): ?int
