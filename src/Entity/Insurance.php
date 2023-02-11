@@ -15,7 +15,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Expression;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 #[ORM\Entity(repositoryClass: InsuranceRepository::class)]
 #[ApiResource(
@@ -36,7 +35,7 @@ use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
     paginationItemsPerPage: 8
 )]
 #[ApiFilter(PropertyFilter::class)]
-#[ApiFilter(DateFilter::class, properties: ['oc', 'ac', 'nw', 'tacho'])]
+#[ApiFilter(DateFilter::class, properties: ['oc', 'ac', 'nw', 'tacho', 'tech'])]
 class Insurance
 {
     #[ORM\Id]
@@ -61,6 +60,7 @@ class Insurance
     private ?\DateTimeInterface $tacho = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Expression('value === null or value >= this.getDateNow()')]
     private ?\DateTimeInterface $tech = null;
 
     #[Groups(['insurance:read'])]
@@ -130,11 +130,13 @@ class Insurance
         return new \DateTime('now', new \DateTimeZone('Europe/Warsaw'));
     }
 
+    #[Groups(['insurance:read'])]
     public function getTech(): ?\DateTimeInterface
     {
         return $this->tech;
     }
 
+    #[Groups(['insurance:write'])]
     public function setTech(?\DateTimeInterface $tech): self
     {
         $this->tech = $tech;
