@@ -83,7 +83,7 @@ class Insurance
         return $this->id;
     }
 
-    #[Groups(['insurance:read'])]
+    #[Groups(['insurance:read', 'vehicle:read'])]
     public function getOc(): ?\DateTimeInterface
     {
         return $this->oc;
@@ -97,7 +97,7 @@ class Insurance
         return $this;
     }
 
-    #[Groups(['insurance:read'])]
+    #[Groups(['insurance:read', 'vehicle:read'])]
     public function getAc(): ?\DateTimeInterface
     {
         return $this->ac;
@@ -111,7 +111,7 @@ class Insurance
         return $this;
     }
 
-    #[Groups(['insurance:read'])]
+    #[Groups(['insurance:read', 'vehicle:read'])]
     public function getNw(): ?\DateTimeInterface
     {
         return $this->nw;
@@ -125,7 +125,7 @@ class Insurance
         return $this;
     }
 
-    #[Groups(['insurance:read'])]
+    #[Groups(['insurance:read', 'vehicle:read'])]
     public function getTacho(): ?\DateTimeInterface
     {
         return $this->tacho;
@@ -144,7 +144,7 @@ class Insurance
         return new \DateTime('now', new \DateTimeZone('Europe/Warsaw'));
     }
 
-    #[Groups(['insurance:read'])]
+    #[Groups(['insurance:read', 'vehicle:read'])]
     public function getTech(): ?\DateTimeInterface
     {
         return $this->tech;

@@ -64,7 +64,7 @@ class Vehicle
         return $this->id;
     }
 
-    #[Groups(['vehicle:read'])]
+    #[Groups(['vehicle:read', 'insurance:read'])]
     public function getRegisterNumber(): ?string
     {
         return $this->register_number;
@@ -84,7 +84,6 @@ class Vehicle
         return $this->insurance;
     }
 
-    #[Groups(['vehicle:item:write:patch'])]
     public function setInsurance(Insurance $insurance): self
     {
         // set the owning side of the relation if necessary
