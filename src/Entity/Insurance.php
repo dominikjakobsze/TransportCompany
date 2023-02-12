@@ -13,8 +13,11 @@ use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Repository\InsuranceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Expression;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ORM\Entity(repositoryClass: InsuranceRepository::class)]
 #[ApiResource(
@@ -23,7 +26,11 @@ use Symfony\Component\Validator\Constraints\Expression;
         new Get(),
         new Patch(),
         new GetCollection(),
-        new Post()
+        new Post(
+            denormalizationContext: [
+                'groups' => ['insurance:write', 'insurance:item:write:post']
+            ]
+        )
     ],
     normalizationContext: [
         'groups' => ['insurance:read']
@@ -34,6 +41,7 @@ use Symfony\Component\Validator\Constraints\Expression;
     paginationEnabled: true,
     paginationItemsPerPage: 8
 )]
+#[UniqueEntity(fields: ['vehicle_owner'])]
 #[ApiFilter(PropertyFilter::class)]
 #[ApiFilter(DateFilter::class, properties: ['oc', 'ac', 'nw', 'tacho', 'tech'])]
 class Insurance
@@ -62,6 +70,12 @@ class Insurance
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Expression('value === null or value >= this.getDateNow()')]
     private ?\DateTimeInterface $tech = null;
+
+    #[ORM\OneToOne(inversedBy: 'insurance', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    #[NotNull]
+    #[NotBlank]
+    private ?Vehicle $vehicle_owner = null;
 
     #[Groups(['insurance:read'])]
     public function getId(): ?int
@@ -140,6 +154,20 @@ class Insurance
     public function setTech(?\DateTimeInterface $tech): self
     {
         $this->tech = $tech;
+
+        return $this;
+    }
+
+    #[Groups(['insurance:read'])]
+    public function getVehicleOwner(): ?Vehicle
+    {
+        return $this->vehicle_owner;
+    }
+
+    #[Groups(['insurance:item:write:post'])]
+    public function setVehicleOwner(Vehicle $vehicle_owner): self
+    {
+        $this->vehicle_owner = $vehicle_owner;
 
         return $this;
     }

@@ -23,7 +23,11 @@ use Symfony\Component\Validator\Constraints\NotNull;
     shortName: 'vehicle',
     operations: [
         new Get(),
-        new Patch(),
+        new Patch(
+            denormalizationContext: [
+                'groups' => ['vehicle:write', 'vehicle:item:write:patch']
+            ]
+        ),
         new GetCollection(),
         new Post(),
         new Delete()
@@ -52,6 +56,9 @@ class Vehicle
     #[NotBlank]
     private ?string $register_number = null;
 
+    #[ORM\OneToOne(mappedBy: 'vehicle_owner', cascade: ['persist', 'remove'])]
+    private ?Insurance $insurance = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -67,6 +74,25 @@ class Vehicle
     public function setRegisterNumber(string $register_number): self
     {
         $this->register_number = $register_number;
+
+        return $this;
+    }
+
+    #[Groups(['vehicle:read'])]
+    public function getInsurance(): ?Insurance
+    {
+        return $this->insurance;
+    }
+
+    #[Groups(['vehicle:item:write:patch'])]
+    public function setInsurance(Insurance $insurance): self
+    {
+        // set the owning side of the relation if necessary
+        if ($insurance->getVehicleOwner() !== $this) {
+            $insurance->setVehicleOwner($this);
+        }
+
+        $this->insurance = $insurance;
 
         return $this;
     }
