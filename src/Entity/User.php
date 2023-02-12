@@ -2,15 +2,31 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    shortName: 'user',
+    operations: [
+        new Post(),
+        new Delete()
+        //delete new Delete Later
+    ],
+    denormalizationContext: [
+        'groups' => ['user:write']
+    ],
+)]
 #[UniqueEntity(fields: ['email'])]
 class User implements UserInterface
 {
@@ -26,7 +42,12 @@ class User implements UserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
+
+    #[ORM\Column(type: Types::TEXT)]
+    #[NotBlank]
+    #[NotNull]
+    private ?string $password = null;
 
     public function getId(): ?int
     {
@@ -38,6 +59,7 @@ class User implements UserInterface
         return $this->email;
     }
 
+    #[Groups(['user:write'])]
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -69,10 +91,6 @@ class User implements UserInterface
 
     public function setRoles(array $roles): self
     {
-        //if empty, set to ROLE_USER
-        if (empty($roles)) {
-            $roles[] = 'ROLE_USER';
-        }
         $this->roles = $roles;
 
         return $this;
@@ -85,5 +103,19 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    #[Groups(['user:write'])]
+    public function setPassword(string $password): self
+    {
+        $password = password_hash($password, PASSWORD_BCRYPT);
+        $this->password = $password;
+
+        return $this;
     }
 }

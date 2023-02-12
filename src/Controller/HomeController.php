@@ -24,4 +24,10 @@ class HomeController extends AbstractController
     {
         dd((new \DateTime('now', new \DateTimeZone('Europe/Warsaw'))));
     }
+
+    #[Route('/api/login', name: 'api_login')]
+    public function login()
+    {
+        dd('/api/login Controller');
+    }
 }
