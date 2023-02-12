@@ -16,7 +16,11 @@ security:
     main:
       lazy: true
       provider: app_user_provider
+      stateless: true
+      custom_authenticators:
+        - App\Security\LoginAuthenticator
 
+  
   
   
   # Easy way to control access for large sections of your site
