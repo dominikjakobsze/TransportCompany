@@ -4,9 +4,14 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['email'])]
 class User implements UserInterface
 {
     #[ORM\Id]
@@ -15,6 +20,9 @@ class User implements UserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[NotBlank]
+    #[NotNull]
+    #[Email]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -44,7 +52,7 @@ class User implements UserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -61,6 +69,10 @@ class User implements UserInterface
 
     public function setRoles(array $roles): self
     {
+        //if empty, set to ROLE_USER
+        if (empty($roles)) {
+            $roles[] = 'ROLE_USER';
+        }
         $this->roles = $roles;
 
         return $this;
