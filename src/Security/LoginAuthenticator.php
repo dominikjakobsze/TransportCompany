@@ -35,7 +35,7 @@ class LoginAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        dd('success');
+        dd($token);
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
