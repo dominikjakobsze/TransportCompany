@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Service\JsonWebTokenService;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,12 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
 class LoginAuthenticator extends AbstractAuthenticator
 {
+    public function __construct(
+        private JsonWebTokenService $jsonWebTokenService
+    )
+    {
+    }
+
     public function supports(Request $request): ?bool
     {
         //then change GET to POST
@@ -35,7 +42,12 @@ class LoginAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        dd($token->getUser());
+        dd($this->jsonWebTokenService->createToken([
+            'email' => $token->getUser()->getEmail(),
+            'roles' => $token->getUser()->getRoles(),
+            'id' => $token->getUser()->getId(),
+            'exp' => (new \DateTime('now', new \DateTimeZone('Europe/Warsaw')))->modify('+2 hours')
+        ]));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

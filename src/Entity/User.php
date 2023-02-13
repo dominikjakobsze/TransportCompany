@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
@@ -20,8 +21,12 @@ use Symfony\Component\Validator\Constraints\NotNull;
     shortName: 'user',
     operations: [
         new Post(),
-        new Delete()
+        new Delete(),
+        new GetCollection()
         //delete new Delete Later
+    ],
+    normalizationContext: [
+        'groups' => ['user:read']
     ],
     denormalizationContext: [
         'groups' => ['user:write']
@@ -49,11 +54,13 @@ class User implements UserInterface
     #[NotNull]
     private ?string $password = null;
 
+    #[Groups(['user:read'])]
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    #[Groups(['user:read'])]
     public function getEmail(): ?string
     {
         return $this->email;
@@ -80,6 +87,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
+    #[Groups(['user:read'])]
     public function getRoles(): array
     {
         $roles = $this->roles;
