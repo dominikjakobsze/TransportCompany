@@ -4,11 +4,12 @@ namespace App\Security;
 
 use App\Entity\User;
 use App\Service\JsonWebTokenService;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
@@ -42,16 +43,17 @@ class LoginAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        dd($this->jsonWebTokenService->createToken([
+        $jwt = $this->jsonWebTokenService->createToken([
             'email' => $token->getUser()->getEmail(),
             'roles' => $token->getUser()->getRoles(),
             'id' => $token->getUser()->getId(),
             'exp' => (new \DateTime('now', new \DateTimeZone('Europe/Warsaw')))->modify('+2 hours')
-        ]));
+        ]);
+        return new JsonResponse(data: ['jwtToken' => $jwt], status: 200, headers: [], json: false);
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        dd('failure');
+        throw new UserNotFoundException(message: "bad password or email", code: 401);
     }
 }
