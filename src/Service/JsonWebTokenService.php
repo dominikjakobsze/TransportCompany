@@ -21,6 +21,11 @@ class JsonWebTokenService
 
     public function decodeToken(string $token): array
     {
-        dd($this->jwt->decode($token, new Key($this->jwtKey, 'HS256')));
+        return json_decode(json_encode($this->jwt->decode($token, new Key($this->jwtKey, 'HS256'))), true);
+    }
+
+    public function getCurrentTime(): \DateTime
+    {
+        return (new \DateTime('now', new \DateTimeZone('Europe/Warsaw')));
     }
 }
