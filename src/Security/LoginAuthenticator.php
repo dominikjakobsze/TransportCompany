@@ -47,7 +47,7 @@ class LoginAuthenticator extends AbstractAuthenticator
             'email' => $token->getUser()->getEmail(),
             'roles' => $token->getUser()->getRoles(),
             'id' => $token->getUser()->getId(),
-            'exp' => (new \DateTime('now', new \DateTimeZone('Europe/Warsaw')))->modify('+2 hours')
+            'expiration' => (new \DateTime('now', new \DateTimeZone('Europe/Warsaw')))->modify('+2 hours')
         ]);
         return new JsonResponse(data: ['jwtToken' => $jwt], status: 200, headers: [], json: false);
     }
